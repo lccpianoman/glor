@@ -27,7 +27,7 @@ rustPlatform.buildRustPackage {
 
   meta = {
     description = "Configure Pixart-based Glorious mice (Model O 2 / I 2 family) on Linux";
-    homepage = "https://github.com/lukecollins/glor";
+    homepage = "https://github.com/lccpianoman/glor";
     license = lib.licenses.mit;
     mainProgram = "glor";
     platforms = lib.platforms.linux;

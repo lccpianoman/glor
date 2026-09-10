@@ -16,7 +16,7 @@ Developed against a **Model O 2 Wireless** receiver (`093a:822d`).
 ```nix
 {
   inputs.glor = {
-    url = "github:lukecollins/glor";
+    url = "github:lccpianoman/glor";
     # Optional, but recommended: build against your nixpkgs instead of pulling a
     # second copy into the store.
     inputs.nixpkgs.follows = "nixpkgs";
@@ -37,8 +37,8 @@ only long-stable nixpkgs API and builds on both stable and unstable.
 ### Any distribution with Nix
 
 ```bash
-nix run github:lukecollins/glor -- info
-nix profile install github:lukecollins/glor
+nix run github:lccpianoman/glor -- info
+nix profile install github:lccpianoman/glor
 ```
 
 ### From source
