@@ -203,11 +203,9 @@ pub fn doctor() -> Result<String> {
 
     if !any_writable {
         lines.push(String::new());
-        lines.push(
-            "No interface could be opened. hidraw nodes are root-only by default;\n\
-             use ./run-temp.sh for a session-only chmod, or install a udev rule."
-                .to_string(),
-        );
+        lines.push(permission_help());
+        lines.push(String::new());
+        lines.push("Print the rule with: glor doctor --udev-rule".to_string());
     }
     Ok(lines.join("\n"))
 }
@@ -329,11 +327,6 @@ pub fn listen_battery_with(
     Ok(None)
 }
 
-/// [`listen_battery_with`] without progress reporting.
-pub fn listen_battery(timeout: Duration) -> Result<Option<Battery>> {
-    listen_battery_with(timeout, |_| {})
-}
-
 /// A long-lived reader for the battery broadcast, for UIs that want live updates.
 ///
 /// Holds one open handle and polls without blocking, so it never delays a configuration
@@ -380,6 +373,19 @@ impl BatteryListener {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn permission_help_renders() {
+        let help = permission_help();
+        println!(
+            "
+{help}
+"
+        );
+        assert!(help.contains(UDEV_RULE_NAME));
+        assert!(help.contains("programs.glor.enable"));
+        assert!(help.contains("udevadm"));
+    }
 
     #[test]
     fn udev_rules_cover_every_supported_device() {

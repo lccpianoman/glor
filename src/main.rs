@@ -2,7 +2,6 @@ mod buttons;
 mod device;
 mod protocol;
 mod state;
-mod tui;
 
 use anyhow::{bail, Context, Result};
 use clap::{Args, Parser, Subcommand};
@@ -75,8 +74,6 @@ enum Commands {
         #[arg(long)]
         force: bool,
     },
-    /// Launch the interactive TUI.
-    Tui,
     /// Set the lighting effect and its parameters.
     Rgb(RgbArgs),
     /// Set effect brightness (0-100). Applies to both wired and wireless unless narrowed.
@@ -367,11 +364,14 @@ fn print_battery(reading: &state::BatteryReading, fresh: bool) {
 fn battery_command(wait: u64, watch: bool, force: bool) -> Result<()> {
     if watch {
         println!("Watching for battery broadcasts (~every 65s). Ctrl-C to stop.");
+        // One long-lived handle rather than reopening the device every iteration, and
+        // non-blocking so a daemon never holds the device against a concurrent write.
+        let listener = device::BatteryListener::open()?;
         loop {
-            if let Some(b) = device::listen_battery(Duration::from_secs(wait.max(1)))? {
+            if let Some(b) = listener.poll() {
                 let reading = state::BatteryReading::new(b);
                 println!(
-                    "  {}%{} ",
+                    "{}%{}",
                     reading.percent,
                     if reading.charging { ", charging" } else { "" }
                 );
@@ -379,6 +379,7 @@ fn battery_command(wait: u64, watch: bool, force: bool) -> Result<()> {
                 state.battery = Some(reading);
                 state.save()?;
             }
+            std::thread::sleep(Duration::from_millis(500));
         }
     }
 
@@ -517,7 +518,6 @@ fn run(cli: Cli) -> Result<()> {
         }
         Commands::Info => print_info(&State::load()?)?,
         Commands::Battery { wait, watch, force } => battery_command(wait, watch, force)?,
-        Commands::Tui => tui::run()?,
 
         Commands::Rgb(args) => {
             let effect: Effect = args.effect.parse()?;

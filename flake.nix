@@ -19,7 +19,7 @@
       apps = forAllSystems (pkgs: rec {
         glor = {
           type = "app";
-          program = lib.getExe self.packages.${pkgs.system}.glor;
+          program = lib.getExe self.packages.${pkgs.stdenv.hostPlatform.system}.glor;
         };
         default = glor;
       });
@@ -38,7 +38,7 @@
             enable = lib.mkEnableOption "glor, a configuration tool for Glorious mice";
             package = lib.mkOption {
               type = lib.types.package;
-              default = self.packages.${pkgs.system}.glor;
+              default = self.packages.${pkgs.stdenv.hostPlatform.system}.glor;
               defaultText = lib.literalString "glor from this flake";
               description = "The glor package to use.";
             };
@@ -52,15 +52,15 @@
 
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          inputsFrom = [ self.packages.${pkgs.system}.glor ];
+          inputsFrom = [ self.packages.${pkgs.stdenv.hostPlatform.system}.glor ];
           packages = with pkgs; [ clippy rustfmt rust-analyzer ];
         };
       });
 
       # `nix flake check` builds the package and runs the test suite.
       checks = forAllSystems (pkgs: {
-        inherit (self.packages.${pkgs.system}) glor;
-        tests = self.packages.${pkgs.system}.glor.overrideAttrs (_: {
+        inherit (self.packages.${pkgs.stdenv.hostPlatform.system}) glor;
+        tests = self.packages.${pkgs.stdenv.hostPlatform.system}.glor.overrideAttrs (_: {
           pname = "glor-tests";
           doCheck = true;
         });

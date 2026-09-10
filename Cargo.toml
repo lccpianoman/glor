@@ -2,7 +2,7 @@
 name = "glor"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.85"
+rust-version = "1.87"
 description = "Configure Pixart-based Glorious mice (Model O 2 / I 2 family) on Linux"
 repository = "https://github.com/lukecollins/glor"
 license = "MIT"
@@ -14,7 +14,6 @@ exclude = ["/.reference", "/target", "/result"]
 [dependencies]
 anyhow = "1.0"
 clap = { version = "4.5", features = ["derive"] }
-crossterm = "0.29"
 hidapi = "2.6"
 libc = "0.2.189"
 serde = { version = "1.0.229", features = ["derive"] }

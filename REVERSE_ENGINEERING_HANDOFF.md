@@ -237,7 +237,7 @@ and brightness byte assignments, the polling-rate code table, and motion sync on
 
 ## Environment notes
 
-- hidraw nodes are root-only by default. `./run-temp.sh` chmods them for one command.
+- hidraw nodes are root-only by default; install `udev/70-glorious.rules` (see the README).
   A permanent udev rule is in the README (NixOS `services.udev.extraRules`).
 - `nix develop -c cargo …` for builds; `nix-shell -p <tool>` for ad-hoc tools.
 - The raw-HID scratch tooling used during reverse engineering has been removed now that

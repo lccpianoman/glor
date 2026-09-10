@@ -153,11 +153,6 @@ impl State {
         &self.profiles[self.active_profile as usize]
     }
 
-    pub fn active_mut(&mut self) -> &mut Profile {
-        let idx = self.active_profile as usize;
-        &mut self.profiles[idx]
-    }
-
     /// Borrows a specific profile, or the active one when `profile` is `None`.
     pub fn profile_mut(&mut self, profile: Option<u8>) -> Result<(&mut Profile, u8)> {
         let idx = profile.unwrap_or(self.active_profile);
@@ -310,8 +305,8 @@ mod tests {
     fn round_trips_through_disk() {
         let path = temp_path("roundtrip");
         let mut state = State::default();
-        state.active_mut().lighting.effect = Effect::Wave;
-        state.active_mut().settings.stage_dpis[1] = 1600;
+        state.profiles[0].lighting.effect = Effect::Wave;
+        state.profiles[0].settings.stage_dpis[1] = 1600;
         state.save_to(&path).unwrap();
 
         let loaded = State::load_from(&path).unwrap();
@@ -332,24 +327,24 @@ mod tests {
     #[test]
     fn normalize_repairs_out_of_range_values() {
         let mut state = State::default();
-        state.active_mut().settings.stage_count = 9;
-        state.active_mut().settings.active_stage = 8;
-        state.active_mut().settings.debounce_ms = 99;
-        state.active_mut().settings.polling_code = 0x7f;
-        state.active_mut().settings.lod_mm = 7;
-        state.active_mut().lighting.speed = 0xff;
+        state.profiles[0].settings.stage_count = 9;
+        state.profiles[0].settings.active_stage = 8;
+        state.profiles[0].settings.debounce_ms = 99;
+        state.profiles[0].settings.polling_code = 0x7f;
+        state.profiles[0].settings.lod_mm = 7;
+        state.profiles[0].lighting.speed = 0xff;
         state.normalize();
 
-        assert_eq!(state.active_mut().settings.stage_count, MAX_STAGES as u8);
-        assert_eq!(state.active_mut().settings.active_stage, 0);
-        assert_eq!(state.active_mut().settings.debounce_ms, 16);
+        assert_eq!(state.profiles[0].settings.stage_count, MAX_STAGES as u8);
+        assert_eq!(state.profiles[0].settings.active_stage, 0);
+        assert_eq!(state.profiles[0].settings.debounce_ms, 16);
         assert_eq!(
-            state.active_mut().settings.polling_hz(),
+            state.profiles[0].settings.polling_hz(),
             1000,
             "an invalid polling code falls back to the fastest rate, not to 125 Hz"
         );
-        assert_eq!(state.active_mut().settings.lod_mm, LOD_MEDIUM_MM);
-        assert_eq!(state.active_mut().lighting.speed, SPEED_RAW_MAX);
+        assert_eq!(state.profiles[0].settings.lod_mm, LOD_MEDIUM_MM);
+        assert_eq!(state.profiles[0].lighting.speed, SPEED_RAW_MAX);
     }
 
     #[test]
@@ -357,12 +352,12 @@ mod tests {
         // The regression this whole module exists to prevent.
         let path = temp_path("preserve");
         let mut state = State::default();
-        state.active_mut().settings.stage_dpis = [1200, 2400, 3600, 4800, 0, 0];
-        state.active_mut().settings.polling_code = crate::protocol::polling_code_for(500).unwrap();
+        state.profiles[0].settings.stage_dpis = [1200, 2400, 3600, 4800, 0, 0];
+        state.profiles[0].settings.polling_code = crate::protocol::polling_code_for(500).unwrap();
         state.save_to(&path).unwrap();
 
         let mut reloaded = State::load_from(&path).unwrap();
-        reloaded.active_mut().settings.debounce_ms = 4;
+        reloaded.profiles[0].settings.debounce_ms = 4;
         reloaded.save_to(&path).unwrap();
 
         let final_state = State::load_from(&path).unwrap();
