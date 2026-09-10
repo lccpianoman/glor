@@ -15,7 +15,12 @@ Developed against a **Model O 2 Wireless** receiver (`093a:822d`).
 
 ```nix
 {
-  inputs.glor.url = "github:lukecollins/glor";
+  inputs.glor = {
+    url = "github:lukecollins/glor";
+    # Optional, but recommended: build against your nixpkgs instead of pulling a
+    # second copy into the store.
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
   # in your system configuration:
   imports = [ inputs.glor.nixosModules.default ];
@@ -24,6 +29,10 @@ Developed against a **Model O 2 Wireless** receiver (`093a:822d`).
 ```
 
 That installs the CLI and the udev rule, so the mouse is usable without elevation.
+
+This flake tracks `nixos-unstable`, but `flake.lock` pins an exact revision — so builds are
+reproducible regardless, and `follows` makes the choice irrelevant to you. The package uses
+only long-stable nixpkgs API and builds on both stable and unstable.
 
 ### Any distribution with Nix
 

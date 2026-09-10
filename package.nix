@@ -1,8 +1,8 @@
-{ lib
-, rustPlatform
-, pkg-config
-, udev
-,
+{
+  lib,
+  rustPlatform,
+  pkg-config,
+  udev,
 }:
 
 rustPlatform.buildRustPackage {
