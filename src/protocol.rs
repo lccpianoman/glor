@@ -322,7 +322,7 @@ pub fn validate_dpi(dpi: u16) -> Result<()> {
     if !(DPI_MIN..=DPI_MAX).contains(&dpi) {
         bail!("DPI {dpi} out of range ({DPI_MIN}-{DPI_MAX})");
     }
-    if !dpi.is_multiple_of(DPI_UNIT) {
+    if dpi % DPI_UNIT != 0 {
         bail!("DPI {dpi} must be a multiple of {DPI_UNIT}");
     }
     Ok(())

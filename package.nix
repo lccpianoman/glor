@@ -13,11 +13,10 @@ rustPlatform.buildRustPackage {
   cargoLock.lockFile = ./Cargo.lock;
 
   nativeBuildInputs = [ pkg-config ];
-  # The hidapi crate builds its bundled hidraw backend, which links against libudev.
+  # hidapi's hidraw backend links against libudev.
   buildInputs = [ udev ];
 
-  # The test suite is pure encoding and state logic; it never opens a device, so it is
-  # safe to run in the sandbox. Enabled explicitly by the `tests` check.
+  # Tests are enabled through flake checks.
   doCheck = false;
 
   postInstall = ''

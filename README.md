@@ -30,9 +30,9 @@ Developed against a **Model O 2 Wireless** receiver (`093a:822d`).
 
 That installs the CLI and the udev rule, so the mouse is usable without elevation.
 
-This flake tracks `nixos-unstable`, but `flake.lock` pins an exact revision — so builds are
-reproducible regardless, and `follows` makes the choice irrelevant to you. The package uses
-only long-stable nixpkgs API and builds on both stable and unstable.
+This flake tracks `nixos-26.05`, and `flake.lock` pins an exact revision for reproducible
+builds. If you set `inputs.glor.inputs.nixpkgs.follows = "nixpkgs"`, it will use your own
+nixpkgs instead.
 
 ### Any distribution with Nix
 
@@ -43,11 +43,17 @@ nix profile install github:lccpianoman/glor
 
 ### From source
 
-Needs a Rust toolchain, `pkg-config` and libudev headers (`libudev-dev` on Debian/Ubuntu,
-`systemd-devel` on Fedora):
+Needs Rust **1.85+**, a C toolchain (`gcc` or `clang`), `pkg-config`, and libudev headers
+(`libudev-dev` on Debian/Ubuntu, `systemd-devel` on Fedora):
 
 ```bash
 cargo build --release
+```
+
+On NixOS, the easiest path is:
+
+```bash
+nix develop -c cargo build --release
 ```
 
 ## Permissions
@@ -168,9 +174,6 @@ each causes real misbehaviour:
   disables the feature on every write.
 - **Reports must be paced** — 150 ms between fragments, 550 ms after a profile switch.
   Unpaced writes are silently dropped by the firmware.
-
-[`REVERSE_ENGINEERING_HANDOFF.md`](REVERSE_ENGINEERING_HANDOFF.md) records how each was
-found, including the wrong turns.
 
 ## Status
 

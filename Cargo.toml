@@ -2,7 +2,7 @@
 name = "glor"
 version = "0.1.0"
 edition = "2021"
-rust-version = "1.87"
+rust-version = "1.85"
 description = "Configure Pixart-based Glorious mice (Model O 2 / I 2 family) on Linux"
 repository = "https://github.com/lccpianoman/glor"
 license = "MIT"

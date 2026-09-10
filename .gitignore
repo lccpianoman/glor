@@ -5,3 +5,14 @@ result
 # Vendor source extracted from Glorious CORE for protocol reference only.
 # Not redistributable - re-extract with the recipe in PROTOCOL.md.
 .reference/
+
+# Local assistant/planning artifacts.
+plan.md
+notes.md
+scratch.md
+todo.md
+tasks.md
+/.copilot/
+/.aider*
+/.claude/
+/.cursor/
