@@ -1,0 +1,22 @@
+# Grant the logged-in user access to Pixart-based Glorious mice (Model O 2 / I 2 family).
+#
+# TAG+="uaccess" hands an ACL to whoever is physically logged in, via systemd-logind.
+# That is preferable to a fixed group: no group management, and access follows the session.
+#
+# Install:
+#   sudo cp 70-glorious.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload-rules && sudo udevadm trigger
+#
+# On NixOS, use the flake's nixosModules.default instead of copying this file.
+
+SUBSYSTEM!="hidraw", GOTO="glorious_end"
+
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="821a", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="821d", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="822a", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="822b", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="822d", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="826a", MODE="0660", TAG+="uaccess"
+ATTRS{idVendor}=="093a", ATTRS{idProduct}=="826d", MODE="0660", TAG+="uaccess"
+
+LABEL="glorious_end"

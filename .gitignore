@@ -1,0 +1,7 @@
+/target
+/.direnv
+result
+
+# Vendor source extracted from Glorious CORE for protocol reference only.
+# Not redistributable - re-extract with the recipe in PROTOCOL.md.
+.reference/
