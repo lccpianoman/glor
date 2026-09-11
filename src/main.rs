@@ -130,7 +130,7 @@ enum Commands {
         button: String,
         /// What to bind it to.
         binding: String,
-        /// Permit a mapping with no left-click. Recovering needs a hardware factory reset.
+        /// Permit a mapping with no left-click. Mouse-only recovery needs a hardware reset.
         #[arg(long)]
         allow_no_left_click: bool,
     },
@@ -439,9 +439,13 @@ fn restore_sigpipe() {
 /// Set on the child so an elevated run can never try to elevate again.
 const ELEVATED_MARKER: &str = "GLOR_ELEVATED";
 
-fn is_tty() -> bool {
-    // SAFETY: isatty on a fixed descriptor has no preconditions.
-    unsafe { libc::isatty(libc::STDIN_FILENO) == 1 }
+fn has_terminal() -> bool {
+    // SAFETY: isatty on fixed descriptors has no preconditions.
+    unsafe {
+        libc::isatty(libc::STDIN_FILENO) == 1
+            || libc::isatty(libc::STDOUT_FILENO) == 1
+            || libc::isatty(libc::STDERR_FILENO) == 1
+    }
 }
 
 /// Re-runs this command under `sudo` after a permission failure.
@@ -477,8 +481,13 @@ fn handle_failure(err: anyhow::Error, no_sudo: bool) -> Result<()> {
     eprintln!("{}", device::permission_help());
 
     let already_elevated = std::env::var_os(ELEVATED_MARKER).is_some();
-    if no_sudo || already_elevated || !is_tty() {
+    if no_sudo || already_elevated {
         eprintln!();
+        return Err(err);
+    }
+    if !has_terminal() {
+        eprintln!("\nNo terminal is attached, so sudo cannot prompt for a password.");
+        eprintln!("Re-run with sudo, or install the udev rule so elevation is no longer needed.\n");
         return Err(err);
     }
 

@@ -1,10 +1,10 @@
 # glor
 
-Configure Pixart-based **Glorious Model O 2 / I 2** mice on Linux — RGB, DPI, polling rate,
-lift-off distance, debounce, motion sync, onboard profiles, button remapping, macros and
-battery.
+Configure Pixart-based **Glorious Model O 2 / I 2 family** mice on Linux — RGB, DPI, polling
+rate, lift-off distance, debounce, motion sync, onboard profiles, button remapping, macros,
+and battery reporting.
 
-These are the `093a` mice. The Sinowealth-era tools — `gloriousctl`, `mxw`, libratbag —
+These are the `093a` mice. The Sinowealth-era tools — `gloriousctl`, `mxw`, `libratbag` —
 target the older `258a` generation and do not support them.
 
 Developed against a **Model O 2 Wireless** receiver (`093a:822d`).
@@ -69,9 +69,10 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 Then replug the mouse or its receiver. The rule uses `TAG+="uaccess"`, which grants access
 to whoever is physically logged in — no group management, and access follows the session.
 
-If the rule is missing, `glor` explains how to install it and then offers to re-run the
-command under `sudo` so you are not blocked. `--no-sudo` disables that. An elevated run
-hands the config file back to your user afterwards, so it never becomes root-owned.
+If the rule is missing, `glor` explains how to install it and (when a terminal is attached)
+offers to re-run the command under `sudo` so you are not blocked. `--no-sudo` disables that.
+An elevated run hands the config file back to your user afterwards, so it never becomes
+root-owned.
 
 `glor doctor` diagnoses interface selection and permissions.
 
@@ -115,9 +116,9 @@ glor --trace <command>                               # hexdump outgoing fragment
 ```
 
 `glor bind` refuses a mapping that leaves no button bound to left-click — the firmware
-accepts it, and the result is a mouse you cannot use to undo the mistake without the
-hardware factory reset (hold left + right + scroll click for 5 s). `--allow-no-left-click`
-overrides.
+accepts it. You can still recover from the CLI if you have keyboard access, but with
+mouse-only input the fallback is a hardware factory reset (hold left + right + scroll
+click for 5 s). `--allow-no-left-click` overrides.
 
 ### Effects
 
